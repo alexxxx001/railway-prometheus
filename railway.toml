@@ -1,9 +1,13 @@
+# Railway Config for Prometheus
+# Root Directory should be set to: monitoring/prometheus
+
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-numReplicas = 1
+healthcheckPath = "/-/healthy"
+healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 

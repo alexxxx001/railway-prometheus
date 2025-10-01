@@ -1,34 +1,25 @@
 global:
-  scrape_interval:     15s # By default, scrape targets every 15 seconds.
-
-  # Attach these labels to any time series or alerts when communicating with
-  # external systems (federation, remote storage, Alertmanager).
+  scrape_interval: 15s
+  evaluation_interval: 15s
   external_labels:
-    monitor: 'railway-prom'
+    monitor: 'lpbot-railway'
+    environment: 'production'
 
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  # LP Bot metrics
+  - job_name: 'lpbot'
+    metrics_path: '/metrics'
+    scheme: https
+    static_configs:
+      - targets: ['dinamic-lp-production-f67d.up.railway.app']
+        labels:
+          service: 'lpbot'
+          environment: 'production'
+    scrape_interval: 15s
+    scrape_timeout: 10s
+
+  # Prometheus self-monitoring
   - job_name: 'prometheus'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
-
     static_configs:
       - targets: ['localhost:9090']
-  
-  - job_name: 'demo_application'
-    scrape_interval: 5s
-    static_configs:
-      - targets: ['demo.do.prometheus.io:9090']
 
-  # - job_name: 'postgres'
-  #   scrape_interval: 5s
-  #   static_configs:
-  #     - targets: ['localhost:9187']
-
-  # - job_name: 'mysql'
-  #   scrape_interval: 5s
-  #   static_configs:
-  #     - targets: ['localhost:9104']
